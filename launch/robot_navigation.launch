@@ -1,0 +1,26 @@
+<launch>
+  <!-- Arguments -->
+  <arg name="map_file" default="$(find robot_navigation)/maps/map.yaml"/>
+  <arg name="open_rviz" default="false"/>
+
+  <!-- robot with lidar -->
+  <include file="$(find robot_navigation)/launch/robot_lidar.launch">
+  </include>
+
+  <!-- Map server -->
+  <node pkg="map_server" name="map_server" type="map_server" args="$(arg map_file)"/>
+
+  <!-- AMCL -->
+  <include file="$(find robot_navigation)/launch/amcl.launch"/>
+
+  <!-- move_base -->
+  <include file="$(find robot_navigation)/launch/move_base.launch">
+  </include>
+
+  <!-- rviz -->
+  <group if="$(arg open_rviz)"> 
+    <node pkg="rviz" type="rviz" name="rviz" required="true"
+          args="-d $(find robot_navigation)/rviz/navigation.rviz"/>
+  </group>
+
+</launch>

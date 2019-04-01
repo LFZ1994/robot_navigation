@@ -1,0 +1,17 @@
+<launch>
+  <!-- Arguments -->
+  <arg name="slam_methods" default="gmapping" doc="slam type [gmapping, cartographer, hector, karto, frontier_exploration]"/>
+  <arg name="open_rviz" default="false"/>
+
+  <!-- move base -->
+  <include file="$(find robot_navigation)/launch/robot_lidar.launch"/>
+
+  <!-- SLAM: Gmapping, Cartographer, Hector, Karto, Frontier_exploration, RTAB-Map -->
+  <include file="$(find robot_navigation)/launch/$(arg slam_methods).launch"/>
+
+  <!-- rviz -->
+  <group if="$(arg open_rviz)"> 
+    <node pkg="rviz" type="rviz" name="rviz" required="true"
+          args="-d $(find robot_kit)/rviz/slam.rviz"/>
+  </group>
+</launch>
