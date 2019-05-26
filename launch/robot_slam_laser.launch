@@ -9,6 +9,10 @@
   <!-- SLAM: Gmapping, Cartographer, Hector, Karto, Frontier_exploration, RTAB-Map -->
   <include file="$(find robot_navigation)/launch/$(arg slam_methods).launch"/>
 
+  <!-- move_base -->
+  <include file="$(find robot_navigation)/launch/move_base.launch">
+  </include>
+  
   <!-- rviz -->
   <group if="$(arg open_rviz)"> 
     <node pkg="rviz" type="rviz" name="rviz" required="true"
