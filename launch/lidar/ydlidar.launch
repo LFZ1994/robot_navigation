@@ -1,6 +1,4 @@
 <launch>
-    <include file="$(find base_control)/launch/base_control.launch"/>
-    <!--<include file="$(find ydlidar)/launch/lidar.launch" />-->
     
     <node name="ydlidar_node"  pkg="ydlidar"  type="ydlidar_node" output="screen">
         <param name="port"         type="string" value="/dev/ydlidar"/>  
