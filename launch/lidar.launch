@@ -1,3 +1,52 @@
 <launch>
-    <include file="$(find robot_navigation)/launch/lidar/$(env LIDAR_TYPE).launch" />
+    <!--robot bast type use different tf value-->
+    <arg name="base_type"       default="$(env BASE_TYPE)" />
+    <!-- robot frame -->
+    <arg name="base_frame"       default="/base_footprint" />    
+    <arg name="lidar_type"       default="$(env LIDAR_TYPE)" />   
+    <arg name="lidar_frame" default="base_laser_link"/>  
+
+    <include file="$(find robot_navigation)/launch/lidar/$(arg lidar_type).launch">
+        <arg name="lidar_frame"            value="$(arg lidar_frame)"/>
+    </include>
+
+    <group if="$(eval lidar_type == 'ydlidar_x2l')">
+        <group if="$(eval base_type == 'NanoRobot')">
+            <node pkg="tf" type="static_transform_publisher" name="base_footprint_to_laser"
+                args="0.01225 0.0 0.15 0.0 0.0 0.0 $(arg base_frame) $(arg lidar_frame) 50">
+            </node>
+        </group>
+        <group if="$(eval base_type == '4WD')">
+            <node pkg="tf" type="static_transform_publisher" name="base_footprint_to_laser"
+                args="0.01 0.0 0.25 0.0 0.0 0.0 $(arg base_frame) $(arg lidar_frame) 50">
+            </node>
+        </group>
+        <group if="$(eval base_type == 'NanoCar')">
+            <node pkg="tf" type="static_transform_publisher" name="base_footprint_to_laser"
+                args="0.0624 0.0 0.115 0.0 0.0 0.0 $(arg base_frame) $(arg lidar_frame) 50">
+            </node>
+        </group>
+    </group>
+
+    <group unless="$(eval lidar_type == 'ydlidar_x2l')">
+        <group if="$(eval base_type == 'NanoRobot')">
+            <node pkg="tf" type="static_transform_publisher" name="base_footprint_to_laser"
+                args="0.01225 0.0 0.15 3.14159265 0.0 0.0 $(arg base_frame) $(arg lidar_frame) 50">
+            </node>
+        </group>
+        <group if="$(eval base_type == '4WD')">
+            <node pkg="tf" type="static_transform_publisher" name="base_footprint_to_laser"
+                args="0.01 0.0 0.25 3.14159265 0.0 0.0 $(arg base_frame) $(arg lidar_frame) 50">
+            </node>
+        </group>
+        <group if="$(eval base_type == 'NanoCar')">
+            <node pkg="tf" type="static_transform_publisher" name="base_footprint_to_laser"
+                args="0.0624 0.0 0.115 3.14159265 0.0 0.0 $(arg base_frame) $(arg lidar_frame) 50">
+            </node>
+        </group>
+    </group>
+
+
+
+
 </launch>

@@ -73,7 +73,7 @@ def status_callback(msg):
 
 
 def click_callback(msg):
-    global markerArray,count,MARKERS_MAX
+    global markerArray,count
     global goal_pub,index
     global add_more_point
 
@@ -128,7 +128,7 @@ def click_callback(msg):
         goal_status_pub.publish(move)
 
     count += 1
-    print 'add a path goal point'
+    print 'add a path goal point %f %f'%(msg.point.x,msg.point.y)
 
 
 markerArray = MarkerArray()
@@ -148,27 +148,3 @@ goal_status_sub = rospy.Subscriber('/move_base/result',MoveBaseActionResult,stat
 #we deleberate pub a topic to trig the goal sent
 goal_status_pub = rospy.Publisher('/move_base/result',MoveBaseActionResult,queue_size=1)
 rospy.spin()
-
-# sac = actionlib.SimpleActionClient('move_base', MoveBaseAction )
-# goal = MoveBaseGoal()
-# goal.target_pose.pose.position.x = 0.0
-# goal.target_pose.pose.position.y = 0.0
-# goal.target_pose.pose.orientation.w = 1.0
-# goal.target_pose.header.frame_id = 'map'
-# goal.target_pose.header.stamp = rospy.Time.now()
-#
-# #start listner
-# sac.wait_for_server()
-#
-# #send goal
-# sac.send_goal(goal)
-# #finish
-# sac.wait_for_result()
-#
-# rate = rospy.Rate(10)
-#
-# while not rospy.is_shutdown():
-#     print sac.get_result()
-#     print 'ada'
-#     rate.sleep()
-

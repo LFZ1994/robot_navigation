@@ -1,4 +1,16 @@
 <launch>
-    <include file="$(find base_control)/launch/base_control.launch"/>
-    <include file="$(find robot_navigation)/launch/lidar.launch" />
+    <!-- config param -->
+    <arg name="pub_imu"       default="False" />
+    <arg name="sub_ackermann"       default="False" />
+    <arg name="lidar_frame" default="base_laser_link"/>  
+
+    <include file="$(find base_control)/launch/base_control.launch">
+        <arg name="pub_imu"            value="$(arg pub_imu)"/>  
+        <arg name="sub_ackermann"            value="$(arg sub_ackermann)"/>  
+    </include>
+
+    <include file="$(find robot_navigation)/launch/lidar.launch">
+        <arg name="lidar_frame"            value="$(arg lidar_frame)"/>  
+    </include>
+    
 </launch>

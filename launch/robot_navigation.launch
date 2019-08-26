@@ -1,20 +1,36 @@
 <launch>
   <!-- Arguments -->
   <arg name="map_file" default="$(find robot_navigation)/maps/map.yaml"/>
+  <arg name="simulation" default= "false"/> 
+  <arg name="planner"  default="dwa" doc="opt: dwa, teb"/> 
   <arg name="open_rviz" default="false"/>
 
-  <!-- robot with lidar -->
-  <include file="$(find robot_navigation)/launch/robot_lidar.launch">
-  </include>
+  <group if="$(arg simulation)">
+    <!-- simulation robot with lidar and map-->
+    <include file="$(find robot_navigation)/simulation/simulation.launch"/>
+  </group>
 
-  <!-- Map server -->
-  <node pkg="map_server" name="map_server" type="map_server" args="$(arg map_file)"/>
-
-  <!-- AMCL -->
-  <include file="$(find robot_navigation)/launch/amcl.launch"/>
+  <group unless="$(arg simulation)">
+    <!-- robot with lidar -->
+    <include file="$(find robot_navigation)/launch/robot_lidar.launch">
+          <!--<arg name="robot_name"            value="$(arg robot_name)"/>-->
+    </include>
+    <!-- Map server -->
+    <node pkg="map_server" name="map_server" type="map_server" args="$(arg map_file)">
+      <param name="frame_id" value="map"/>
+    </node>
+    <!-- AMCL -->
+    <node pkg="amcl" type="amcl" name="amcl" output="screen">
+      <rosparam file="$(find robot_navigation)/param/$(env BASE_TYPE)/amcl_params.yaml" command="load" />
+      <param name="initial_pose_x"            value="0.0"/>
+      <param name="initial_pose_y"            value="0.0"/>
+      <param name="initial_pose_a"            value="0.0"/>
+    </node>
+  </group>
 
   <!-- move_base -->
-  <include file="$(find robot_navigation)/launch/move_base.launch">
+  <include file="$(find robot_navigation)/launch/move_base.launch" >
+    <arg name="planner"            value="$(arg planner)"/>
   </include>
 
   <!-- rviz -->

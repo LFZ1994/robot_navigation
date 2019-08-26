@@ -5,6 +5,6 @@
   </node>
 
     <node pkg="tf" type="static_transform_publisher" name="base_footprint_to_laser"
-        args="0.03 0.0 0.15 -1.570796325 0.0 0.0 /base_footprint /laser 50">
+        args="0.0125 0.0 0.15 -1.570796325 0.0 0.0 /base_footprint /laser 50">
     </node>
 </launch>

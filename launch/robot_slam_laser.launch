@@ -1,21 +1,37 @@
 <launch>
   <!-- Arguments -->
-  <arg name="slam_methods" default="gmapping" doc="slam type [gmapping, cartographer, hector, karto, frontier_exploration]"/>
+  <arg name="slam_methods" default="gmapping" doc="slam type [gmapping, hector, karto, cartographer]"/>
   <arg name="open_rviz" default="false"/>
+  <arg name="simulation" default= "false"/> 
+  <arg name="planner"  default="" doc="opt: dwa, teb"/> 
 
-  <!-- move base -->
-  <include file="$(find robot_navigation)/launch/robot_lidar.launch"/>
+  <param name="/use_sim_time" value="$(arg simulation)" />  
 
-  <!-- SLAM: Gmapping, Cartographer, Hector, Karto, Frontier_exploration, RTAB-Map -->
-  <include file="$(find robot_navigation)/launch/$(arg slam_methods).launch"/>
+  <!-- simulation robot with lidar and map-->
+  <group if="$(arg simulation)">
+    <include file="$(find robot_navigation)/simulation/simulation_robot.launch"/>
+  </group>
 
-  <!-- move_base -->
-  <include file="$(find robot_navigation)/launch/move_base.launch">
+  <!-- robot with lidar -->
+  <group unless="$(arg simulation)">
+    <include file="$(find robot_navigation)/launch/robot_lidar.launch"/>
+  </group>
+
+  <!-- SLAM: Gmapping, Cartographer, Hector, Karto -->
+  <include file="$(find robot_navigation)/launch/includes/$(arg slam_methods).launch">
+    <arg name="simulation"            value="$(arg simulation)"/>
   </include>
-  
+  <!-- move_base -->
+  <group unless="$(eval planner == '')">
+    <include file="$(find robot_navigation)/launch/move_base.launch" unless="$(eval planner == '')">
+        <arg name="planner"            value="$(arg planner)"/>
+    </include>
+  </group>
+
   <!-- rviz -->
   <group if="$(arg open_rviz)"> 
     <node pkg="rviz" type="rviz" name="rviz" required="true"
-          args="-d $(find robot_kit)/rviz/slam.rviz"/>
+          args="-d $(find robot_navigation)/rviz/slam.rviz"/>
   </group>
+  
 </launch>
