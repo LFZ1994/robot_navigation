@@ -1,0 +1,6 @@
+<launch>
+
+    <node name="robot_pose_publisher" pkg="robot_pose_publisher" type="robot_pose_publisher" />
+    <node name="multi_mark" pkg="robot_navigation" type="show_mark.py" output="screen" />
+
+</launch>

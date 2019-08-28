@@ -1,0 +1,8 @@
+<launch>
+  <arg name="lidar_frame" default="lidar"/>   
+  <node pkg="sc_mini" type="sc_mini" name="sc_mini" output="screen">
+    <param name="frame_id" type="string" value="$(arg lidar_frame)"/>
+    <param name="port" type="string" value="/dev/sclidar"/>
+    <param name="baud_rate" type="int" value="115200"/>
+  </node>
+</launch>

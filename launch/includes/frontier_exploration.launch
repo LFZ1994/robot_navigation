@@ -1,0 +1,13 @@
+<launch>
+  <!-- Arguments -->
+  <arg name="sensor_range" default="1.0"/>
+
+  <!-- frontier_exploration -->
+  <node pkg="frontier_exploration" type="explore_client" name="explore_client" output="screen"/>
+  <node pkg="frontier_exploration" type="explore_server" name="explore_server" output="screen" >
+    <param name="frequency" type="double" value="1.0"/>
+    <param name="goal_aliasing" type="double" value="$(arg sensor_range)"/>
+    <rosparam file="$(find robot_navigation)/param/$(env BASE_TYPE)/costmap_common_params.yaml" command="load" ns="explore_costmap" />
+    <rosparam file="$(find robot_navigation)/config/frontier_exploration.yaml" command="load" ns="explore_costmap" />
+  </node>
+</launch>
