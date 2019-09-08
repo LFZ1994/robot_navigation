@@ -1,5 +1,6 @@
 # General Parameters
 base_frame: base_footprint
+map_update_interval: 5
 use_scan_matching: true
 use_scan_barycenter: true
 minimum_travel_distance: 0.12 

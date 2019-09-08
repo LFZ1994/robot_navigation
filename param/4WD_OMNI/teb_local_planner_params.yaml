@@ -16,23 +16,25 @@ TebLocalPlannerROS:
          
  max_vel_x: 0.2
  max_vel_x_backwards: 0.2
- max_vel_y: 0.0
+ max_vel_y: 0.2
  max_vel_theta: 1.0 # the angular velocity is also bounded by min_turning_radius in case of a carlike robot (r = v / omega)
  acc_lim_x: 0.5
+ acc_lim_y: 0.2
  acc_lim_theta: 0.5
  min_turning_radius: 0.0 # diff-drive robot (can turn on place!)
+
  footprint_model: # types: "point", "circular", "two_circles", "line", "polygon"
    type: "point"
 
  # GoalTolerance
     
- xy_goal_tolerance: 0.1
+ xy_goal_tolerance: 0.05
  yaw_goal_tolerance: 0.1
  free_goal_vel: False
     
  # Obstacles
     
- min_obstacle_dist: 0.10 # This value must also include our robot's expansion, since footprint_model is set to "line".
+ min_obstacle_dist: 0.20 # This value must also include our robot's expansion, since footprint_model is set to "line".
  inflation_dist : 0.20
  include_costmap_obstacles: True
  costmap_obstacles_behind_robot_dist: 0.2
@@ -49,8 +51,10 @@ TebLocalPlannerROS:
  optimization_verbose: False
  penalty_epsilon: 0.1
  weight_max_vel_x: 2
+ weight_max_vel_y: 2
  weight_max_vel_theta: 1
  weight_acc_lim_x: 1
+ weight_acc_lim_y: 1
  weight_acc_lim_theta: 1
  weight_kinematics_nh: 1000
  weight_kinematics_forward_drive: 1

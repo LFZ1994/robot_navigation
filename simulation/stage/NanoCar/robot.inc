@@ -31,7 +31,7 @@ define robot position
 
   # kinematics
   drive "car"
-  wheelbase 0.16 # distance between both axles
+  wheelbase 0.145 # distance between both axles
   
   # spawn sensors
   laser(pose [ -0.1 0.0 -0.11 0.0 ])

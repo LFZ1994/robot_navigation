@@ -32,8 +32,8 @@ floorplan
 (
   name "maze"
   bitmap "../../maps/maze.png"
-  size [ 10.0 10.0 2.0 ]
-  pose [  5.0  5.0 0.0 0.0 ]
+  size [ 10.0 10.0 2.000 ]
+  pose [  5.000  5.000 0.000 0.000 ]
 )
 
 # throw in a robot

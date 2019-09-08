@@ -1,10 +1,9 @@
 <launch>
+  <arg name="lidar_frame" default="lidar"/>   
+
   <node name="iiiroboticslidar2"    pkg="iiiroboticslidar2"  type="iiirobotics_lidar2_node" >
-  <param name="serial_port"         type="string" value="/dev/iiilidar"/>
-  <param name="frame_id"            type="string" value="laser"/>
+    <param name="serial_port"         type="string" value="/dev/iiilidar"/>
+    <param name="frame_id"            type="string" value="$(arg lidar_frame)"/>
   </node>
 
-    <node pkg="tf" type="static_transform_publisher" name="base_footprint_to_laser"
-        args="0.0125 0.0 0.15 -1.570796325 0.0 0.0 /base_footprint /laser 50">
-    </node>
 </launch>

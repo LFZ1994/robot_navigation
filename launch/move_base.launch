@@ -3,6 +3,8 @@
   <arg name="cmd_vel_topic" default="cmd_vel" />
   <arg name="odom_topic" default="odom" />
   <arg name="planner"  default="dwa" doc="opt: dwa, teb"/> 
+  <arg name="simulation" default= "false"/> 
+  <arg name="base_type" default= "$(env BASE_TYPE)"/> 
 
   <!-- move_base use DWA planner-->
   <group if="$(eval planner == 'dwa')">
@@ -13,11 +15,11 @@
       <rosparam file="$(find robot_navigation)/param/$(env BASE_TYPE)/local_costmap_params.yaml" command="load" />
       <rosparam file="$(find robot_navigation)/param/$(env BASE_TYPE)/global_costmap_params.yaml" command="load" />
       <rosparam file="$(find robot_navigation)/param/$(env BASE_TYPE)/move_base_params.yaml" command="load" />
-      <rosparam file="$(find robot_navigation)/param/$(env BASE_TYPE)/$(arg  planner)_local_planner_params.yaml" command="load" />
+      <rosparam file="$(find robot_navigation)/param/$(env BASE_TYPE)/dwa_local_planner_params.yaml" command="load" />
       <remap from="cmd_vel" to="$(arg cmd_vel_topic)"/>
       <remap from="odom" to="$(arg odom_topic)"/>
     </node>
-  </group>-->
+  </group>
   <!-- move_base use TEB planner-->
   <group if="$(eval planner == 'teb')">
     <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
@@ -26,12 +28,14 @@
       <rosparam file="$(find robot_navigation)/param/$(env BASE_TYPE)/costmap_common_params.yaml" command="load" ns="local_costmap" />
       <rosparam file="$(find robot_navigation)/param/$(env BASE_TYPE)/local_costmap_params.yaml" command="load" />
       <rosparam file="$(find robot_navigation)/param/$(env BASE_TYPE)/global_costmap_params.yaml" command="load" />
-      <rosparam file="$(find robot_navigation)/param/$(env BASE_TYPE)/teb_local_planner_params.yaml" command="load" />
       <rosparam file="$(find robot_navigation)/param/$(env BASE_TYPE)/move_base_params.yaml" command="load" />
-        <remap from="cmd_vel" to="$(arg cmd_vel_topic)"/>
-        <remap from="odom" to="$(arg odom_topic)"/>
+      <rosparam file="$(find robot_navigation)/param/$(env BASE_TYPE)/teb_local_planner_params.yaml" command="load" />
+      <remap from="cmd_vel" to="$(arg cmd_vel_topic)"/>
+      <remap from="odom" to="$(arg odom_topic)"/>
+       <!--stage simulator takes the angle instead of the rotvel as input (twist message)-->
+      
     </node>
-  </group>-->
+  </group>
 
 
     <!-- move_base -->
