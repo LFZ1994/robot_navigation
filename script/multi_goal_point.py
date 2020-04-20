@@ -8,7 +8,7 @@ import math
 from geometry_msgs.msg import PointStamped,PoseStamped
 import actionlib
 from move_base_msgs.msg import *
-
+import tf
 def status_callback(msg):
 
     global goal_pub, index,markerArray
@@ -22,7 +22,7 @@ def status_callback(msg):
         if index < count:
 
             pose = PoseStamped()
-            pose.header.frame_id = "/map"
+            pose.header.frame_id = "map"
             pose.header.stamp = rospy.Time.now()
             pose.pose.position.x = markerArray.markers[index].pose.position.x
             pose.pose.position.y = markerArray.markers[index].pose.position.y
@@ -53,7 +53,7 @@ def status_callback(msg):
         print 'Goal cannot reached has some error :',msg.status.status," try again!!!!"
         if try_again == 1:
             pose = PoseStamped()
-            pose.header.frame_id = "/map"
+            pose.header.frame_id = "map"
             pose.header.stamp = rospy.Time.now()
             pose.pose.position.x = markerArray.markers[index-1].pose.position.x
             pose.pose.position.y = markerArray.markers[index-1].pose.position.y
@@ -63,7 +63,7 @@ def status_callback(msg):
         else:
             if index < len(markerArray.markers):
                 pose = PoseStamped()
-                pose.header.frame_id = "/map"
+                pose.header.frame_id = "map"
                 pose.header.stamp = rospy.Time.now()
                 pose.pose.position.x = markerArray.markers[index].pose.position.x
                 pose.pose.position.y = markerArray.markers[index].pose.position.y
@@ -78,20 +78,26 @@ def click_callback(msg):
     global add_more_point
 
     marker = Marker()
-    marker.header.frame_id = "/map"
+    marker.header.frame_id = "map"
     marker.type = marker.TEXT_VIEW_FACING
     marker.action = marker.ADD
-    marker.scale.x = 1
-    marker.scale.y = 1
-    marker.scale.z = 1
+    marker.scale.x = 0.5
+    marker.scale.y = 0.5
+    marker.scale.z = 0.5
     marker.color.a = 1.0
     marker.color.r = 1.0
     marker.color.g = 0.0
     marker.color.b = 0.0
-    marker.pose.orientation.w = 1.0
-    marker.pose.position.x = msg.point.x
-    marker.pose.position.y = msg.point.y
-    marker.pose.position.z = msg.point.z
+    # marker.pose.orientation.w = 1.0
+    marker.pose.position.x = msg.pose.position.x
+    marker.pose.position.y = msg.pose.position.y
+    marker.pose.position.z = msg.pose.position.z
+
+    marker.pose.orientation.x = msg.pose.orientation.x
+    marker.pose.orientation.y = msg.pose.orientation.y
+    marker.pose.orientation.z = msg.pose.orientation.z
+    marker.pose.orientation.w = msg.pose.orientation.w
+
     marker.text = str(count)
     # We add the new marker to the MarkerArray, removing the oldest
     # marker from it when necessary
@@ -112,11 +118,15 @@ def click_callback(msg):
     #first goal
     if count==0:
         pose = PoseStamped()
-        pose.header.frame_id = "/map"
+        pose.header.frame_id = "map"
         pose.header.stamp = rospy.Time.now()
-        pose.pose.position.x = msg.point.x
-        pose.pose.position.y = msg.point.y
-        pose.pose.orientation.w = 1
+        pose.pose.position.x = msg.pose.position.x
+        pose.pose.position.y = msg.pose.position.y
+        pose.pose.position.z = msg.pose.position.z
+        pose.pose.orientation.x = msg.pose.orientation.x
+        pose.pose.orientation.y = msg.pose.orientation.y
+        pose.pose.orientation.z = msg.pose.orientation.z
+        pose.pose.orientation.w = msg.pose.orientation.w
         goal_pub.publish(pose)
         index += 1
 
@@ -126,9 +136,10 @@ def click_callback(msg):
         move.status.status = 3
         move.header.stamp = rospy.Time.now()
         goal_status_pub.publish(move)
-
+    quaternion = (msg.pose.orientation.x, msg.pose.orientation.y, msg.pose.orientation.z, msg.pose.orientation.w)
+    theta = tf.transformations.euler_from_quaternion( quaternion)[2]
     count += 1
-    print 'add a path goal point %f %f'%(msg.point.x,msg.point.y)
+    # print 'add a path goal point %f %f %f'%(msg.pose.position.x,msg.pose.position.y,theta*180.0/3.14)
 
 
 markerArray = MarkerArray()
@@ -138,10 +149,10 @@ index = 0       #current goal point index
 add_more_point = 0 # after all goal arrive, if add some more goal
 try_again = 1  # try the fail goal once again
 
-rospy.init_node('path_point_demo')
+rospy.init_node('multi_goal_point_demo')
 
 mark_pub = rospy.Publisher('/path_point', MarkerArray,queue_size=100)
-click_sub = rospy.Subscriber('/clicked_point',PointStamped,click_callback)
+click_goal_sub = rospy.Subscriber('/goal',PoseStamped,click_callback)
 goal_pub = rospy.Publisher('/move_base_simple/goal',PoseStamped,queue_size=1)
 goal_status_sub = rospy.Subscriber('/move_base/result',MoveBaseActionResult,status_callback)
 #after all goal arrive, if add some more goal
