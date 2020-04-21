@@ -79,26 +79,27 @@ def click_callback(msg):
 
     marker = Marker()
     marker.header.frame_id = "map"
-    marker.type = marker.TEXT_VIEW_FACING
+    marker.header.stamp = rospy.Time.now()
+    # marker.type = marker.TEXT_VIEW_FACING
+    marker.type = marker.CYLINDER
     marker.action = marker.ADD
-    marker.scale.x = 0.5
-    marker.scale.y = 0.5
+    marker.scale.x = 0.2
+    marker.scale.y = 0.2
     marker.scale.z = 0.5
     marker.color.a = 1.0
-    marker.color.r = 1.0
-    marker.color.g = 0.0
+    marker.color.r = 0.0
+    marker.color.g = 1.0
     marker.color.b = 0.0
-    # marker.pose.orientation.w = 1.0
+    marker.pose.orientation.x = 0.0
+    marker.pose.orientation.y = 0.0
+    marker.pose.orientation.z = 0.0
+    marker.pose.orientation.w = 1.0
     marker.pose.position.x = msg.pose.position.x
     marker.pose.position.y = msg.pose.position.y
     marker.pose.position.z = msg.pose.position.z
 
-    marker.pose.orientation.x = msg.pose.orientation.x
-    marker.pose.orientation.y = msg.pose.orientation.y
-    marker.pose.orientation.z = msg.pose.orientation.z
-    marker.pose.orientation.w = msg.pose.orientation.w
+    # marker.text = str(count)
 
-    marker.text = str(count)
     # We add the new marker to the MarkerArray, removing the oldest
     # marker from it when necessary
     # if(count > MARKERS_MAX):
@@ -151,7 +152,7 @@ try_again = 1  # try the fail goal once again
 
 rospy.init_node('multi_goal_point_demo')
 
-mark_pub = rospy.Publisher('/path_point', MarkerArray,queue_size=100)
+mark_pub = rospy.Publisher('/path_point_array', MarkerArray,queue_size=100)
 click_goal_sub = rospy.Subscriber('/goal',PoseStamped,click_callback)
 goal_pub = rospy.Publisher('/move_base_simple/goal',PoseStamped,queue_size=1)
 goal_status_sub = rospy.Subscriber('/move_base/result',MoveBaseActionResult,status_callback)
