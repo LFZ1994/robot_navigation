@@ -51,7 +51,7 @@
         </group>
         <group if="$(eval base_type == 'NanoRobot_Pro')">
             <node pkg="tf" type="static_transform_publisher" name="base_footprint_to_laser"
-                args="-0.0515 0.0 0.18 1.5708 0.0 0.0 $(arg base_frame) $(arg lidar_frame) 20">
+                args="-0.0515 0.0 0.18 -1.5708 0.0 0.0 $(arg base_frame) $(arg lidar_frame) 20">
             </node>
         </group>
         <group if="$(eval base_type == '4WD')">

@@ -5,6 +5,7 @@
   <arg name="planner"  default="dwa" doc="opt: dwa, teb"/> 
   <arg name="simulation" default= "false"/> 
   <arg name="base_type" default= "$(env BASE_TYPE)"/> 
+  <arg name="move_forward_only" default="false"/>
 
   <!-- move_base use DWA planner-->
   <group if="$(eval planner == 'dwa')">
@@ -18,6 +19,7 @@
       <rosparam file="$(find robot_navigation)/param/$(env BASE_TYPE)/dwa_local_planner_params.yaml" command="load" />
       <remap from="cmd_vel" to="$(arg cmd_vel_topic)"/>
       <remap from="odom" to="$(arg odom_topic)"/>
+      <param name="DWAPlannerROS/min_vel_x" value="0.0" if="$(arg move_forward_only)" />
     </node>
   </group>
   <!-- move_base use TEB planner-->
@@ -32,6 +34,7 @@
       <rosparam file="$(find robot_navigation)/param/$(env BASE_TYPE)/teb_local_planner_params.yaml" command="load" />
       <remap from="cmd_vel" to="$(arg cmd_vel_topic)"/>
       <remap from="odom" to="$(arg odom_topic)"/>
+      <param name="TebLocalPlannerROS/max_vel_x_backwards" value="0.0" if="$(arg move_forward_only)" />
        <!--stage simulator takes the angle instead of the rotvel as input (twist message)-->
       
     </node>
